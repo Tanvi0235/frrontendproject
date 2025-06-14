@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .player {
+            background-color: #2c3e50;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            color: white;
+            text-align: center;
+        }
+
+        .player-info {
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        button {
+            background-color: #3498db;
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        input[type="range"] {
+            width: 100px;
+        }
+
+        .volume-control {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="player">
+        <div class="player-info">
+            <p id="song-title">Song Title</p>
+            <p id="artist-name">Artist Name</p>
+        </div>
+        <audio id="audio-player" src="path-to-your-audio-file.mp3"></audio>
+
+        <div class="controls">
+            <button id="play-pause-btn">Play</button>
+            <input type="range" id="progress-bar" value="0" max="100">
+            <button id="next-btn">Next</button>
+            <button id="prev-btn">Previous</button>
+        </div>
+
+        <div class="volume-control">
+            <label for="volume">Volume:</label>
+            <input type="range" id="volume" value="100" max="100">
+        </div>
+    </div>
+
+    <script>
+        const playPauseBtn = document.getElementById("play-pause-btn");
+        const audioPlayer = document.getElementById("audio-player");
+        const progressBar = document.getElementById("progress-bar");
+        const volumeControl = document.getElementById("volume");
+        const nextBtn = document.getElementById("next-btn");
+        const prevBtn = document.getElementById("prev-btn");
+
+        // Sample song information (replace with real data or dynamic values)
+        const songs = [
+            { title: "Song 1", artist: "Artist 1", file: "path-to-song-1.mp3" },
+            { title: "Song 2", artist: "Artist 2", file: "path-to-song-2.mp3" },
+            { title: "Song 3", artist: "Artist 3", file: "path-to-song-3.mp3" }
+        ];
+
+        let currentSongIndex = 0;
+
+        // Update song info
+        function updateSongInfo() {
+            document.getElementById("song-title").innerText = songs[currentSongIndex].title;
+            document.getElementById("artist-name").innerText = songs[currentSongIndex].artist;
+            audioPlayer.src = songs[currentSongIndex].file;
+        }
+
+        // Play/Pause functionality
+        playPauseBtn.addEventListener("click", () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playPauseBtn.innerText = "Pause";
+            } else {
+                audioPlayer.pause();
+                playPauseBtn.innerText = "Play";
+            }
+        });
+
+        // Progress bar update
+        audioPlayer.addEventListener("timeupdate", () => {
+            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            progressBar.value = progress;
+        });
+
+        // Sync progress bar with click
+        progressBar.addEventListener("input", () => {
+            const seekTime = (progressBar.value / 100) * audioPlayer.duration;
+            audioPlayer.currentTime = seekTime;
+        });
+
+        // Volume control
+        volumeControl.addEventListener("input", () => {
+            audioPlayer.volume = volumeControl.value / 100;
+        });
+
+        // Next song
+        nextBtn.addEventListener("click", () => {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            updateSongInfo();
+            audioPlayer.play();
+            playPauseBtn.innerText = "Pause";
+        });
+
+        // Previous song
+        prevBtn.addEventListener("click", () => {
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            updateSongInfo();
+            audioPlayer.play();
+            playPauseBtn.innerText = "Pause";
+        });
+
+        // Initialize player with first song
+        updateSongInfo();
+    </script>
+</body>
+</html>
